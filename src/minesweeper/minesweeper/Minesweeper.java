@@ -10,6 +10,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -105,7 +106,18 @@ public class Minesweeper extends Application {
 					break;
 				}
 
+				btn.setOnMouseClicked(tag_the_bomb -> {
+					if (tag_the_bomb.getButton() == MouseButton.SECONDARY) {
+						Image image2 = new Image(Minesweeper.class.getResourceAsStream("flag.png"));
+						ImageView image_view2 = new ImageView(image2);
+						btn.setGraphic(image_view2);
+						image_view2.setFitHeight(btn.getPrefHeight() - 28);
+						image_view2.setFitWidth(btn.getPrefWidth() - 28);
+					}
+				});
+
 				btn.setOnAction(action -> {
+
 					if (!btn.getText().isEmpty())
 						return;
 
@@ -118,10 +130,11 @@ public class Minesweeper extends Application {
 						Alert alertbombe = new Alert(AlertType.CONFIRMATION, "YOU LOST!!!");
 						alertbombe.setHeaderText("You stepped on a bomb...");
 						alertbombe.show();
+						
 					} else
 						btn.setText(String.valueOf(field[tmpi][tmpj]));
 
-					if (field[tmpi][tmpj] == 0) {
+					if (field[tmpi][tmpj] == 0) {					
 						if (tmpj != 0)
 							btn_field[tmpi][tmpj - 1].getOnAction().handle(action);
 						if (tmpi != 0)
@@ -130,7 +143,6 @@ public class Minesweeper extends Application {
 							btn_field[tmpi][tmpj + 1].getOnAction().handle(action);
 						if (tmpi != 8)
 							btn_field[tmpi + 1][tmpj].getOnAction().handle(action);
-
 					}
 				});
 			}
