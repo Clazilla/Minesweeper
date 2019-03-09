@@ -27,7 +27,13 @@ public class Minesweeper extends Application {
 		for (int z = 0; z < 9; z++) {
 			int i = rnd.nextInt(9);
 			int j = rnd.nextInt(9);
-			field[i][j] = 9;
+
+			if (field[i][j] != 9) {
+				field[i][j] = 9;
+			} else {
+				z--;
+				continue;
+			}
 
 			int starti = i - 1;
 			int startj = j - 1;
@@ -63,6 +69,9 @@ public class Minesweeper extends Application {
 	public void start(Stage stage) throws Exception {
 		GridPane group = new GridPane();
 		Scene scene = new Scene(group, 800, 500);
+
+		Image image1 = new Image(Minesweeper.class.getResourceAsStream("bombe.png"));
+		Image image2 = new Image(Minesweeper.class.getResourceAsStream("flag.png"));
 
 		stage.setScene(scene);
 		stage.setTitle("Minesweeper");
@@ -107,34 +116,36 @@ public class Minesweeper extends Application {
 				}
 
 				btn.setOnMouseClicked(tag_the_bomb -> {
-					if (tag_the_bomb.getButton() == MouseButton.SECONDARY) {
-						Image image2 = new Image(Minesweeper.class.getResourceAsStream("flag.png"));
+					if (tag_the_bomb.getButton() != MouseButton.SECONDARY || !btn.getText().isEmpty())
+						return;
+					if (btn.getGraphic() == null) {
 						ImageView image_view2 = new ImageView(image2);
 						btn.setGraphic(image_view2);
 						image_view2.setFitHeight(btn.getPrefHeight() - 28);
 						image_view2.setFitWidth(btn.getPrefWidth() - 28);
+					} else {
+						btn.setGraphic(null);
 					}
 				});
 
 				btn.setOnAction(action -> {
 
-					if (!btn.getText().isEmpty())
+					if (!btn.getText().isEmpty() || btn.getGraphic() != null)
 						return;
 
 					if (field[tmpi][tmpj] == 9) {
-						Image image = new Image(Minesweeper.class.getResourceAsStream("bombe.png"));
-						ImageView image_view = new ImageView(image);
-						image_view.setFitHeight(btn.getPrefHeight() - 28);
-						image_view.setFitWidth(btn.getPrefWidth() - 28);
-						btn.setGraphic(image_view);
+						ImageView image_view1 = new ImageView(image1);
+						image_view1.setFitHeight(btn.getPrefHeight() - 28);
+						image_view1.setFitWidth(btn.getPrefWidth() - 28);
+						btn.setGraphic(image_view1);
 						Alert alertbombe = new Alert(AlertType.CONFIRMATION, "YOU LOST!!!");
 						alertbombe.setHeaderText("You stepped on a bomb...");
 						alertbombe.show();
-						
+
 					} else
 						btn.setText(String.valueOf(field[tmpi][tmpj]));
 
-					if (field[tmpi][tmpj] == 0) {					
+					if (field[tmpi][tmpj] == 0) {
 						if (tmpj != 0)
 							btn_field[tmpi][tmpj - 1].getOnAction().handle(action);
 						if (tmpi != 0)
