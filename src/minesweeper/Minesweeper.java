@@ -71,7 +71,7 @@ public class Minesweeper extends Application {
 	public void start(Stage stage) throws Exception {
 		GridPane group = new GridPane();
 		Scene scene = new Scene(group, 800, 500);
-		
+
 		Image image1 = new Image(Minesweeper.class.getResourceAsStream("bombe.png"));
 		Image image2 = new Image(Minesweeper.class.getResourceAsStream("flag.png"));
 
@@ -118,8 +118,6 @@ public class Minesweeper extends Application {
 				}
 
 				btn.setOnMouseClicked(tag_the_bomb -> {
-					if (maxFlagCounter == 9)
-						return;
 					if (flagCounter == 9) {
 						Alert alertYouWon = new Alert(AlertType.CONFIRMATION, "YOU WON!!!");
 						alertYouWon.setHeaderText("You flagged all bombs :)");
@@ -127,7 +125,11 @@ public class Minesweeper extends Application {
 					}
 					if (tag_the_bomb.getButton() != MouseButton.SECONDARY || !btn.getText().isEmpty())
 						return;
+
 					if (btn.getGraphic() == null) {
+						if (maxFlagCounter == 9) {
+							return;
+						}
 						if (field[tmpi][tmpj] == 9) {
 							flagCounter++;
 						}
