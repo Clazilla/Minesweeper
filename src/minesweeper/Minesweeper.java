@@ -20,6 +20,8 @@ public class Minesweeper extends Application {
 
 	public static int[][] field = new int[9][9];
 	public static Button[][] btn_field = new Button[9][9];
+	public static int flagCounter = 0;
+	public static int maxFlagCounter = 0;
 
 	public static void main(String[] args) {
 		Random rnd = new Random();
@@ -69,7 +71,7 @@ public class Minesweeper extends Application {
 	public void start(Stage stage) throws Exception {
 		GridPane group = new GridPane();
 		Scene scene = new Scene(group, 800, 500);
-
+		
 		Image image1 = new Image(Minesweeper.class.getResourceAsStream("bombe.png"));
 		Image image2 = new Image(Minesweeper.class.getResourceAsStream("flag.png"));
 
@@ -116,15 +118,29 @@ public class Minesweeper extends Application {
 				}
 
 				btn.setOnMouseClicked(tag_the_bomb -> {
+					if (maxFlagCounter == 9)
+						return;
+					if (flagCounter == 9) {
+						Alert alertYouWon = new Alert(AlertType.CONFIRMATION, "YOU WON!!!");
+						alertYouWon.setHeaderText("You flagged all bombs :)");
+						alertYouWon.show();
+					}
 					if (tag_the_bomb.getButton() != MouseButton.SECONDARY || !btn.getText().isEmpty())
 						return;
 					if (btn.getGraphic() == null) {
+						if (field[tmpi][tmpj] == 9) {
+							flagCounter++;
+						}
+						maxFlagCounter++;
 						ImageView image_view2 = new ImageView(image2);
 						btn.setGraphic(image_view2);
 						image_view2.setFitHeight(btn.getPrefHeight() - 28);
 						image_view2.setFitWidth(btn.getPrefWidth() - 28);
 					} else {
 						btn.setGraphic(null);
+						maxFlagCounter--;
+						if (field[tmpi][tmpj] == 9)
+							flagCounter--;
 					}
 				});
 
@@ -141,7 +157,7 @@ public class Minesweeper extends Application {
 						Alert alertbombe = new Alert(AlertType.CONFIRMATION, "YOU LOST!!!");
 						alertbombe.setHeaderText("You stepped on a bomb...");
 						alertbombe.show();
-
+						stage.close();
 					} else
 						btn.setText(String.valueOf(field[tmpi][tmpj]));
 
@@ -156,6 +172,7 @@ public class Minesweeper extends Application {
 							btn_field[tmpi + 1][tmpj].getOnAction().handle(action);
 					}
 				});
+
 			}
 		}
 
