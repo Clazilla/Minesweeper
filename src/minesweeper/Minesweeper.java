@@ -77,6 +77,7 @@ public class Minesweeper extends Application {
 
 		stage.setScene(scene);
 		stage.setTitle("Minesweeper");
+		stage.getIcons().add(new Image(Minesweeper.class.getResourceAsStream("icon.png")));
 		group.setAlignment(Pos.CENTER);
 
 		for (int i = 0; i < 9; i++) {
